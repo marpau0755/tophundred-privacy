@@ -1,0 +1,11 @@
+# ads.txt file for Top Hundred app
+# This file is required by Google AdMob to verify authorized digital sellers
+# Place this file at the root of your domain (e.g., yourdomain.com/ads.txt)
+
+# Google AdMob
+google.com, pub-0000000000000000, DIRECT, f08c47fec0942fa0
+
+# Note: Replace 'pub-0000000000000000' with your actual AdMob Publisher ID
+# You can find your Publisher ID in your AdMob account settings
+# Format: google.com, pub-XXXXXXXXXX, DIRECT, f08c47fec0942fa0
+

@@ -1,0 +1,15 @@
+# This .gitignore ensures only the public website files are tracked
+# The mobile game code should be in a separate private repository
+
+# Don't track any hidden files or build artifacts
+.DS_Store
+Thumbs.db
+
+# Only track the actual website files:
+# - index.html
+# - ads.txt
+# - privacy-policy.html
+# - terms-of-use.html
+# - README.md
+# - DEPLOYMENT.md
+
