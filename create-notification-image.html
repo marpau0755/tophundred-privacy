@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Notification Image</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .preview {
+            width: 512px;
+            height: 512px;
+            background: 
+                repeating-conic-gradient(from 0deg, transparent 0%, transparent 25%, rgba(0,0,0,0.05) 25%, rgba(0,0,0,0.05) 50%),
+                white;
+            background-size: 20px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            margin: 20px auto;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            position: relative;
+        }
+        .preview::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: transparent;
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+        }
+        .text {
+            color: #333;
+            font-size: 48px;
+            font-weight: bold;
+            text-align: center;
+            z-index: 1;
+        }
+        .note {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+            color: #856404;
+        }
+        .instructions {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 6px;
+            margin-top: 20px;
+        }
+        .instructions ol {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        .instructions li {
+            margin: 8px 0;
+        }
+        button {
+            background: #dc3545;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        button:hover {
+            background: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Notification Image Preview</h1>
+        <p>This is what your notification image will look like (transparent background with white text):</p>
+        <p style="color: #666; font-size: 14px;">The checkered pattern shows transparency. Android will automatically add a colored circle behind it.</p>
+        
+        <div class="preview" id="preview">
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
+                <div class="text" style="color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); margin-bottom: 10px;">Top</div>
+                <div class="text" style="color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">Hundred</div>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <h3>How to Create the Image:</h3>
+            <ol>
+                <li><strong>Option 1 - Download:</strong> Click the "Download as Image" button below to download a 512x512px PNG with transparent background and white "Top Hundred" text</li>
+                <li><strong>Option 2 - Online Tool:</strong> Use <a href="https://www.canva.com" target="_blank">Canva</a> or similar:
+                    <ul>
+                        <li>Create a 512x512px image</li>
+                        <li>Set background to <strong>transparent</strong></li>
+                        <li>Add white text "Top Hundred" (bold, centered)</li>
+                        <li>Export as PNG with transparency</li>
+                    </ul>
+                </li>
+                <li><strong>Option 3 - Image Editor:</strong> Use Photoshop, GIMP, or any image editor with transparent background</li>
+            </ol>
+            <div class="note">
+                <strong>Note:</strong> Android will automatically add a colored circle (usually gold/amber) behind your transparent icon. The white text will show on top of this colored circle.
+            </div>
+            <p><strong>Save the image as:</strong> <code>notification.png</code></p>
+            <p><strong>Upload to:</strong> <code>public/images/notification.png</code> in your GitHub Pages repo</p>
+        </div>
+        
+        <button onclick="downloadImage()">Download as Image (if supported)</button>
+    </div>
+
+    <script>
+        function downloadImage() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 512;
+            canvas.height = 512;
+            const ctx = canvas.getContext('2d');
+            
+            // Clear canvas (transparent background)
+            ctx.clearRect(0, 0, 512, 512);
+            
+            // Draw white text stacked vertically (Android will add the colored circle automatically)
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 48px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            // Add subtle shadow for better visibility
+            ctx.shadowColor = 'rgba(0,0,0,0.5)';
+            ctx.shadowBlur = 8;
+            ctx.shadowOffsetX = 2;
+            ctx.shadowOffsetY = 2;
+            
+            // Stack the words vertically
+            ctx.fillText('Top', 256, 220);      // Top word
+            ctx.fillText('Hundred', 256, 292);  // Hundred word below
+            
+            // Convert to PNG with transparency and download
+            canvas.toBlob(function(blob) {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'notification.png';
+                a.click();
+                URL.revokeObjectURL(url);
+            }, 'image/png');
+        }
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Notifications - Top Hundred</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 6px;
+            border-left: 4px solid #667eea;
+        }
+        .section h2 {
+            margin-top: 0;
+            color: #667eea;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        button:hover {
+            background: #5568d3;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 4px;
+            display: none;
+        }
+        .result.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .result.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .result.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .result.show {
+            display: block;
+        }
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .info-text {
+            color: #666;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔔 Test Push Notifications</h1>
+        
+        <div class="section">
+            <h2>Test Single User Notification</h2>
+            <p class="info-text">Send a test notification to a specific user by their User ID.</p>
+            <input type="text" id="userId" placeholder="Enter User ID (e.g., abc123xyz)">
+            <button onclick="testSingleUser()">Send Test Notification</button>
+            <div id="result1" class="result"></div>
+        </div>
+        
+        <div class="section">
+            <h2>Test All Users Notification</h2>
+            <p class="info-text">Send a test notification to all registered users with FCM tokens. This bypasses throttling and quiet hours.</p>
+            <button onclick="testAllUsers()">Send to All Users</button>
+            <div id="result2" class="result"></div>
+        </div>
+        
+        <div class="section">
+            <h2>How to Get Your User ID</h2>
+            <ol>
+                <li>Open your app</li>
+                <li>Go to Firebase Console > Firestore > <code>users</code> collection</li>
+                <li>Find your user document and copy the document ID</li>
+                <li>Or check the app logs when you sign in</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        const FUNCTION_BASE_URL = 'https://us-central1-gender-reveal-3b1bf.cloudfunctions.net';
+        
+        async function testSingleUser() {
+            const userId = document.getElementById('userId').value.trim();
+            const resultDiv = document.getElementById('result1');
+            
+            if (!userId) {
+                showResult(resultDiv, 'Please enter a User ID', 'error');
+                return;
+            }
+            
+            showResult(resultDiv, 'Sending notification...', 'info');
+            
+            try {
+                const url = `${FUNCTION_BASE_URL}/testNotification?userId=${encodeURIComponent(userId)}`;
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResult(resultDiv, `✅ Success! Notification sent to ${userId}`, 'success');
+                } else {
+                    showResult(resultDiv, `❌ Error: ${data.error || 'Unknown error'}`, 'error');
+                }
+            } catch (error) {
+                showResult(resultDiv, `❌ Error: ${error.message}`, 'error');
+            }
+        }
+        
+        async function testAllUsers() {
+            const resultDiv = document.getElementById('result2');
+            showResult(resultDiv, 'Sending notifications to all users... This may take a moment.', 'info');
+            
+            try {
+                const url = `${FUNCTION_BASE_URL}/testNotificationToAll`;
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    const message = `✅ Success! Sent ${data.sent} notifications, skipped ${data.skipped} users (${data.totalUsers} total users)`;
+                    showResult(resultDiv, message, 'success');
+                } else {
+                    showResult(resultDiv, `❌ Error: ${data.error || 'Unknown error'}`, 'error');
+                }
+            } catch (error) {
+                showResult(resultDiv, `❌ Error: ${error.message}`, 'error');
+            }
+        }
+        
+        function showResult(element, message, type) {
+            element.textContent = message;
+            element.className = `result ${type} show`;
+        }
+    </script>
+</body>
+</html>
+
