@@ -13,3 +13,8 @@ Thumbs.db
 # - README.md
 # - DEPLOYMENT.md
 
+# Admin panel (never commit - no password protection)
+admin.html
+admin*.html
+
+
